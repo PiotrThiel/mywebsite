@@ -131,8 +131,7 @@ COMMANDS------------------------------------------------------------------------
 							  Od póŸniejszych do wczeœniejszych. GitK od do³u do góry, bez dolnego.
  	my_tag^^^..my_tag				- komity od my_tag-3 poziony do my_tag
 	foo bar ^baz					- oznacza "wypisz wszystkie commity, które s¹ osi¹galne z foo lub bar, ale nie z baz", gdzie ^ - jest wy³¹czeniem ze zbioru
-
-
+>git merge						- po³¹czenie dwóch (lub wiêcej) ga³êzi poprzez przeniesienie zmian z jednej do drugiej.
 >git pull						- pobranie zmian innych cz³onków zespo³u
 >git push						- wypchniêcie/wys³anie zmian do repo z którego zosta³ pobrany projekt
 							  Po wypchniêciu zmainy s¹ widoczne w repo z którego zosta³ pobrany projekt
