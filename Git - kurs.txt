@@ -16,6 +16,7 @@ Definicje:
 	- ruchomy wskaŸnik na commit (zmienia siê z ka¿dym kolejnym commitem)
 	- kopia "koncepcyjna", a nie fizyczna (Git nie duplikuje plików miêdzy ga³êziami)
 	- ga³¹Ÿ - to lista commitów. Z czego jeden jest szczególny to TIP.
+
 • tip	- tip - Ostatni (najnowszy) commit w ga³êzi.
 	Charakterystyki ga³êzi w Gicie
 		- w commicie nie ma zapisanej informacji na jakiej ga³êzi zosta³ utworzony
@@ -31,9 +32,27 @@ Definicje:
 	- skrót (alias) do HEAD jest '@' (ma³pka)
 	-jaki commit jest Ÿród³em plików znajduj¹cych siê w katalogu 'working directory'
 • master - domyœlna nazwa pierwszej ga³êzi w repozytorium Gita. (w innych VCS: trunk, Main, default)
+• merge	- po³¹czenie dwóch (lub wiêcej) ga³êzi poprzez przeniesienie zmian z jednej do drugiej.
+  • Fast-forward merge = Commity ze Ÿród³owej ga³êzi s¹ przeniesione bez zmian i dodatkowych operacji na docelow¹ ga³¹Ÿ. 
+	- FF merge nie zostawia œladu w historii.
+	  Kiedy FF merge jest mo¿liwy?
+	- FF merge jest mo¿liwy tylko wtedy, gdy ga³¹Ÿ DOCELOWA (ta która przyjmie zmiany) nie posiada commitów spoza ga³êzi RÓD£OWEJ (ta od której bêdzie siê bra³o zmiany).
+	- albo inaczej: gdy na ga³êzi docelowej nie wykonano git commit od czasu utworzenia ga³êzi Ÿród³owej.
+	- commity "base" == "target"
+  • 3-way merge - jak dzia³a? Commit po commicie. Plik po pliku. Kawa³ek po kawa³ku. Dla uproszczenia: linia po linii. 
+	  Co znaczy "3-way"?
+	  3 "ways":
+	- "base" - najpóŸniejszy wspólny commit dla obu ga³êzi
+	- "source" - wersja do z³¹czenia (ga³¹Ÿ Ÿród³owa)
+	- "target" - wynikowy plik (mo¿e zawieraæ w³asne zmiany)
+	  Algorytm:
+	- jeœli linia z "base" jest taka sama w "source" i "target" zostawiamy jak jest	
+	- jeœli linia z "base" jest zmieniona (lub usuniêta) w jednym z "source" albo "target" przenosimy zmiany
+	- jeœli linia z "base" jest zmieniona (lub usuniêta) w obu "source" i "target" KONFLKT!
+  • Octopus merge - po³¹czenie wiêcej ni¿ 2 ga³êzi. Powinno siêich unikaæ.
 • parent - poprzedni commit (rodzic)
 	- Commit mo¿e mieæ wielu rodziców, jeœli jest efektem operacji merge.
-	- root commit - pierwszy commit w historii (root commit) nie ma rodzica.
+	- root commit - pierwszy commit w historii (root commit) nie ma  
 • repozytorium - to katalog na dysku zawieraj¹cy wszystkie informacje o aktualnym stanie projektu i jego historii. Mo¿e zawieraæ odwo³ania do innych repo.
 • tag - nieruchomy wskaŸnik, referenja na konkretny commit. Jest to etykieta, nazwa, któr¹ mo¿emy nadaæ commitowi bez zmiany jego historii
 	- raz nadany zawsze wskazuje na to samo miejsce w historii, chyba ¿e zostanie skasowany i utworzony od nowa.
@@ -127,10 +146,14 @@ COMMANDS------------------------------------------------------------------------
 							  ile linii we wszystkich plikach zosta³o dodanych b¹dŸ usuniêtych.
 	--graph    					- poka¿ graf ASCII ga³êzi oraz historiê scaleñ obok wyniku.
 	-- git-rebase.sh				- historia wybranego pliku
+	--all --oneline					- wszystkie commity niezale¿nie od ga³êi w jakiej jesteœ
+
 ..show	tag1..tag2 					- '..' od -do. Wszystkie commity "od" tag1 "do" tag2" (commity bêd¹ce przed tag2, niebêd¹ce przed tag1). 
 							  Od póŸniejszych do wczeœniejszych. GitK od do³u do góry, bez dolnego.
  	my_tag^^^..my_tag				- komity od my_tag-3 poziony do my_tag
 	foo bar ^baz					- oznacza "wypisz wszystkie commity, które s¹ osi¹galne z foo lub bar, ale nie z baz", gdzie ^ - jest wy³¹czeniem ze zbioru
+>gitk 							- graficzny interfejs, pokazuje ga³¹Ÿ na której domyœlnie siê znadujemy
+	--all						- pokazuje szystkie ga³êzie
 >git merge						- po³¹czenie dwóch (lub wiêcej) ga³êzi poprzez przeniesienie zmian z jednej do drugiej.
 >git pull						- pobranie zmian innych cz³onków zespo³u
 >git push						- wypchniêcie/wys³anie zmian do repo z którego zosta³ pobrany projekt
@@ -166,47 +189,46 @@ COMMANDS------------------------------------------------------------------------
 
 
 KONFIGURACJA gita:-------------------------------------------------------------------------------------
->git config --global user.name "Iniê Nazwisko"	
-		- nazwa u¿ytkownika. Cudzys³ów u¿ywamy jak jest spacja miêdzy wyrazami
-		- global - bez tego konfiguracja repo w którym aktualnie siê znajdujemy
-		- global - z tym, to jest robiona konfiguracja wszystkich moich repo (repozytorium)
+>git config --global user.name "Iniê Nazwisko"		- nazwa u¿ytkownika. Cudzys³ów u¿ywamy jak jest spacja miêdzy wyrazami
+		- global 				- bez tego konfiguracja repo w którym aktualnie siê znajdujemy
+		- global 				- z tym, to jest robiona konfiguracja wszystkich moich repo (repozytorium)
 >git config --global user.email thiel.piotr@gmail.com	
 		- mail u¿ytkownika
->git convig core.ditor notepad - ustawienie domyœlnego edytora gita nan notatnik (VIM jest domyœ³ny)
->git config --global diff.tool winmerge - dodanie winmerge jako narzêdia do porównywania plików. Nale¿y go wczeœniej zainstalowaæ w Windowsie.
+>git convig core.ditor notepad 				- ustawienie domyœlnego edytora gita nan notatnik (VIM jest domyœ³ny)
+>git config --global diff.tool winmerge 		- dodanie winmerge jako narzêdia do porównywania plików. Nale¿y go wczeœniej zainstalowaæ w Windowsie.
 
 Weryfikacja gita:
->git config user.name	- nazwa u¿ytkownika gita
->git config user.email	- email u¿ytkownika gita
->git convig core.ditor	- domyœlny edytor gita
->git config.tool <tool name?	- konfiguracja narzêdzia 
->git config diff.tool - zwraca przypisane do gita narzêdzie do porównywania plików. Tutaj: winmerge
+>git config user.name					- nazwa u¿ytkownika gita
+>git config user.email					- email u¿ytkownika gita
+>git convig core.ditor					- domyœlny edytor gita
+>git config.tool <tool name?				- konfiguracja narzêdzia 
+>git config diff.tool 					- zwraca przypisane do gita narzêdzie do porównywania plików. Tutaj: winmerge
 
 
 
 INICJALIZACJA (za³o¿enie)REPOZYTORIUM:------------------------------------------------------------------
-$mkdir my_projects			- utworzenie katalogu
-$cd my_projekts				- przejœcie do tego katalogu
-$git init				- inicjalizacja katalogu jako repozytorim ('init' tworzy ukryty katalog .git)
-$git convig core.ditor notepad		- ustawienie domyœlnego edytora gita
+$mkdir my_projects					- utworzenie katalogu
+$cd my_projekts						- przejœcie do tego katalogu
+$git init						- inicjalizacja katalogu jako repozytorim ('init' tworzy ukryty katalog .git)
+$git convig core.ditor notepad				- ustawienie domyœlnego edytora gita
 
-					Tworzenie projektu:
-$notepad readme.md 			- utworzenie pliku .md 
-$git add readme.md			- dodanie/zapisanie pliku w repozytorium
-$git commit 				- dodanie opisu zmian (commit message) 
-$touch new_file.txt			- daodanie nowego pliku .txt (new_file)		- modyfikacja stanu Workin copy
-$notepad readme.md			- otworzenie pliku i dokonanie jakiœ zmian	- modyfikacja stanu Workin copy
-$git status				- sprawdza statis 'Working copy': nowe pliki, zmodyfikowane, usuniête
-$git commit .				- commit dla wszystkich '.' zmian
-$git diff				- pokazuje wszystkie lokalne zmiany w plikach w konsoli
-$git config --global diff.tool winmerge	- przypisane do gita narzêdzie do porównywania plików: winmerge
-$git difftool				- uruchomienie narzedzia
-$git config --global diftool.prompt false -wy³¹czenie powtarzaj¹cych sie informacji w narzêdziu difftool (winmerge)
-$git log 				- pokazuje historiê projektu (commity)... w konsoli
-$q					-'q' (quick) - wyjœcie z widoku logu
-$git log --oneline			- wszystkie commity po jednej linii (tylko komentarze commita)
-$gitk					- wiualna wersja zmian w repozytorimu (commity). rzeba zamkn¹æ program, aby wpisywaæ nowe komendy
-$git tag finished_ini			- oznaczenie commita, który jest koñcem naszej inicjalizacji projektu
+							Tworzenie projektu:
+$notepad readme.md 					- utworzenie pliku .md 
+$git add readme.md					- dodanie/zapisanie pliku w repozytorium
+$git commit 						- dodanie opisu zmian (commit message) 
+$touch new_file.txt					- daodanie nowego pliku .txt (new_file)		- modyfikacja stanu Workin copy
+$notepad readme.md					- otworzenie pliku i dokonanie jakiœ zmian	- modyfikacja stanu Workin copy
+$git status						- sprawdza statis 'Working copy': nowe pliki, zmodyfikowane, usuniête
+$git commit .						- commit dla wszystkich '.' zmian
+$git diff						- pokazuje wszystkie lokalne zmiany w plikach w konsoli
+$git config --global diff.tool winmerge			- przypisane do gita narzêdzie do porównywania plików: winmerge
+$git difftool						- uruchomienie narzedzia
+$git config --global diftool.prompt false 		-wy³¹czenie powtarzaj¹cych sie informacji w narzêdziu difftool (winmerge)
+$git log 						- pokazuje historiê projektu (commity)... w konsoli
+$q							-'q' (quick) - wyjœcie z widoku logu
+$git log --oneline					- wszystkie commity po jednej linii (tylko komentarze commita)
+$gitk							- wiualna wersja zmian w repozytorimu (commity). rzeba zamkn¹æ program, aby wpisywaæ nowe komendy
+$git tag finished_ini					- oznaczenie commita, który jest koñcem naszej inicjalizacji projektu
 $git log --oneline
 $gitk
 $ git log --oneline
@@ -220,7 +242,7 @@ $ git log --oneline
 	b648627 Add new file plik1.txt and make cznages in files: readme.md
 	d42a077 Initial commit with project description file
 
-$git tag no_hello 549ba15		- otagowanie commita o hsah=549ba15. Komit lekki
+$git tag no_hello 549ba15				- otagowanie commita o hsah=549ba15. Komit lekki
 
 $ git log --oneline
 	d75954d (HEAD -> master, tag: inished_ini) Add year intoo footer
@@ -231,7 +253,7 @@ $ git log --oneline
 	4e6b8b6 Addet initial project template
 
 
-$ git tag				- wypisanie wszystkich tagów
+$ git tag						- wypisanie wszystkich tagów
 	finished_ini
 	no_hello
 
@@ -248,34 +270,34 @@ $ git log --oneline
 	684cde9 (tag: title_mode) Modified website title
 	4e6b8b6 Addet initial project template
 
-$ git tag --oneline no_hello		- wypisanie logu od konkretnego taga. Tutaj od no_hello
+$ git tag --oneline no_hello				- wypisanie logu od konkretnego taga. Tutaj od no_hello
 	549ba15 (tag: no_hello) Change Hello World welcome text
 	684cde9 (tag: title_mode) Modified website title
 	4e6b8b6 Addet initial project template
-$ git show no_hello				- informacje o commicie no_hello
+$ git show no_hello					- informacje o commicie no_hello
 
-$ git tag -d no_hello				- skasowanie tagu no_hello
+$ git tag -d no_hello					- skasowanie tagu no_hello
 	Deleted tag 'no_hello' (was 549ba15)
-$ git tag -d title_mode				- skasowanie tagu title_mode
+$ git tag -d title_mode					- skasowanie tagu title_mode
 	Deleted tag 'title_mode' (was 726f96a)
 
-$ git show master~2				- przejœcie o 2 comity przed commit master
-$ git show master^^				- przejœcie o 2 comity przed commit master
+$ git show master~2					- przejœcie o 2 comity przed commit master
+$ git show master^^					- przejœcie o 2 comity przed commit master
 $ git log 
 
-$ git log --oneline o..h			-pokazanie logów od commita od taga o do g
+$ git log --oneline o..h				-pokazanie logów od commita od taga o do g
 	e53de1f (tag: h) delete year from copyright in footer
 	b8e9dcb (tag: e) removed sign in box from my page
 	549ba15 (tag: ll) Change Hello World welcome text
-$ git log --oneline o^..h			-pokazanie logów od commita od taga o-1 poziom do g
+$ git log --oneline o^..h				-pokazanie logów od commita od taga o-1 poziom do g
 	e53de1f (tag: h) delete year from copyright in footer
 	b8e9dcb (tag: e) removed sign in box from my page
 	549ba15 (tag: ll) Change Hello World welcome text
 	684cde9 (tag: o) Modified website title
 
-$ git branch my_new_branch			- utworzenie nowej ga³êzi o nazwie: my_new_branch
-$ git branch					- lista ga³êzi
-	* master				- * oznacza aktualna ga³¹Ÿ w Working Copy
+$ git branch my_new_branch				- utworzenie nowej ga³êzi o nazwie: my_new_branch
+$ git branch						- lista ga³êzi
+	* master					- * oznacza aktualna ga³¹Ÿ w Working Copy
   	branch1
 	branch2
 
@@ -285,30 +307,30 @@ $ git branch
 	  master
 	  zzz
 
-$ git branch -d branch1				- skaswanie ga³êzi branch1
+$ git branch -d branch1					- skaswanie ga³êzi branch1
 	Deleted branch branch1 (was a2b70e1).
 
-$git show 					- HEAD wskazuje commit bêd¹cy Ÿród³em aktualnej zawartoœci working cop
-$git show HEAD					- HEAD j.w.
-$git show @					- HEAD j.w.
+$git show 						- HEAD wskazuje commit bêd¹cy Ÿród³em aktualnej zawartoœci working cop
+$git show HEAD						- HEAD j.w.
+$git show @						- HEAD j.w.
 
-$ git checkout @^				- Detached HEAD - oznacza ¿e nie jesteœmy na ¿adnej ga³êzi 
+$ git checkout @^					- Detached HEAD - oznacza ¿e nie jesteœmy na ¿adnej ga³êzi 
 
-$ git checkout @^ --  docs/examples/jumbotron/index.html	-przywraca zmiany z ostatniego commita na pliku index.html
+$ git checkout @^ --  docs/examples/jumbotron/index.html -przywraca zmiany z ostatniego commita na pliku index.html
 
-$ git checkout  zzz				- za³adowanie do WD ga³êzi zzz
+$ git checkout  zzz					- za³adowanie do WD ga³êzi zzz
 	Switched to branch 'zzz'
 
-$ git branch -m aaa				- zmiana nazwy za³¹dowanej ga³êzi z 'zzz' na 'aaa'
+$ git branch -m aaa					- zmiana nazwy za³¹dowanej ga³êzi z 'zzz' na 'aaa'
 	Piotr@laptopAsus MINGW64 /c/DEV/Kurs_gita/my_projects (aaa)
 
-$ git branch					- wylistowanie ga³êzi
+$ git branch						- wylistowanie ga³êzi
 	* aaa
   	 branch2
   	 branch3
  	 master
 
-$ git log --oneline				-- listing commitów
+$ git log --oneline					-- listing commitów
 	3b5e763 (HEAD -> master) removd data from footer again
 	a2b70e1 (tag: xyz, branch2, aaa) xyz
 	d75954d (tag: finished_ini, branch3) Add year intoo footer
@@ -317,16 +339,16 @@ $ git log --oneline				-- listing commitów
 	549ba15 (tag: ll) Change Hello World welcome text
 	684cde9 (tag: o) Modified website title
 
-$ git checkout o -- docs/examples/jumbotron/index.html		- za³adowanie pliku index.html z commita o tagu 'o' do WD
+$ git checkout o -- docs/examples/jumbotron/index.html	- za³adowanie pliku index.html z commita o tagu 'o' do WD
 
-$ git status							- sprawdzenie ED
+$ git status						- sprawdzenie ED
 On branch master
 Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
         modified:   docs/examples/jumbotron/index.html
 
 
-$ git commit -m "recover websute title"				- zrobienie nowego commita z pliku ze starego (Przywrócenie zmian w pliku ze wskazanego commita)  
+$ git commit -m "recover websute title"			- zrobienie nowego commita z pliku ze starego (Przywrócenie zmian w pliku ze wskazanego commita)  
 [master 67e615f] recover websute title
  1 file changed, 13 insertions(+), 3 deletions(-)
 
@@ -344,6 +366,62 @@ e53de1f (tag: h) delete year from copyright in footer
 b8e9dcb (tag: e) removed sign in box from my page
 549ba15 (tag: ll) Change Hello World welcome text
 684cde9 (tag: o) Modified website title
+
+**Lekcja 4.09 Merge ***************************************************************************************************************************************************
+$ git checkout -b login_colors				- nowa ga³êŸ + zmiany w indeksie (YELLOW)
+$ git commit . -m "changed signin button to yelow"	- nowy commit na tej ga³êzi
+$ git checkout -b login_colors2				- nowa ga³êŸ + zmiany w indeksie (GREY)
+$ git commit . -m "changed signin button to grey"	- nowy commit na tej ga³êzi
+	Piotr@laptopAsus MINGW64 /c/DEV/Kurs_gita/my_projects (login_colors2)
+$gitk							- pokazuje projekt z lokalnej ga³êzi
+$ gitk --all						- pokazuje projekt z ujêciem wszystkich ga³ê¿i
+
+$ git log -n4 --all --oneline				- ostatnie 4 commity z uwzglêdnieniem wszystkich ga³êzi
+	0d70109 (login_colors2) changed signin button to grey
+	c2f4671 (HEAD -> login_colors) changed signin button to yelow
+	0a3c10a (master) Lekcja 4.08 Ga³êzie + dodanie pliku Git - kurs.txt
+	25f3e66 recover tag ll
+	Piotr@laptopAsus MINGW64 /c/DEV/Kurs_gita/my_projects (login_colors)
+
+$ git checkout login_colors2				- przejœcie do ga³êzi DOCELOWEJ z kolorem Szarym przycisku, 
+	Switched to branch 'login_colors2'		  czyli przechodzimy, na ga³¹Ÿ do której bêd¹ przypisywane zmiany z innej ga³êzi poprzez MERGE
+
+$ git merge login_colors				- na ga³¹Ÿ login_colors2 za³adowana aktualnie do WC przenosimy zmiany z ga³êzi RÓD£OWEJ login_colors
+	Already up to date.
+	Piotr@laptopAsus MINGW64 /c/DEV/Kurs_gita/my_projects (login_colors2)
+							- !!! NIE ZROBI£O MERGE - bo ga³¹Ÿ 'login_colors2' jest 
+
+$ git checkout login_colors				- przejœcie do ga³êzi DOCELOWEJ
+	Already on 'login_colors'
+	Piotr@laptopAsus MINGW64 /c/DEV/Kurs_gita/my_projects (login_colors)
+
+$ git merge login_colors2				- £¹czenie z ga³êzi RÓD£OWEJ (czyli z wersji do z³¹czenia)
+ 							  z³¹czono ga³êzie login_colors i login_colors2 poprzez przypisanie do login_colors zmian w login_colors2
+	Updating c2f4671..0d70109			  GREY -> Yellow (wyœwietla Grey)
+	Fast-forward
+	docs/examples/jumbotron/index.html | 2 +-
+	1 file changed, 1 insertion(+), 1 deletion(-)
+
+$ git log -n4 --all --oneline				- po z³¹czeniu nie ma ju¿ osobnych commitów
+	0d70109 (HEAD -> login_colors, login_colors2) changed signin button to grey
+	c2f4671 changed signin button to yelow
+	0a3c10a (master) Lekcja 4.08 Ga³êzie + dodanie pliku Git - kurs.txt
+	25f3e66 recover tag ll
+	Piotr@laptopAsus MINGW64 /c/DEV/Kurs_gita/my_projects (login_colors)
+
+$ git branch -d login_colors2				- kasuje niepotrzeb¹ eksperymentaln¹ ga³¹Ÿ
+	Deleted branch login_colors2 (was 0d70109).
+	Piotr@laptopAsus MINGW64 /c/DEV/Kurs_gita/my_projects (login_colors)
+	Piotr@laptopAsus MINGW64 /c/DEV/Kurs_gita/my_projects (login_colors)
+
+$ git log -n4 --all --oneline				- ostatnie 4 commity. Widaæ, ¿e projekt wygl¹da tak, jaby nie by³a tworzona nowa ga³¹Ÿ i commit
+	0d70109 (HEAD -> login_colors) changed signin button to grey
+	c2f4671 changed signin button to yelow
+	0a3c10a (master) Lekcja 4.08 Ga³êzie + dodanie pliku Git - kurs.txt
+	25f3e66 recover tag ll
+
+
+test
 
 
 DeepL:================================================================================================
