@@ -4,6 +4,9 @@ Aplikacje Gita:
 -SHIFT + PKM na katalogu repo - rozszerzone menu kontekstowe np Open command window here
 
 
+tekst ekspanedr
+autokomplit
+
 Definicje:
 • commit - stan repozytorium w danym momencie. Konkretna WERSJA projektu w danym momencie czasu:
 	- oznaczony wyliczonym identyfikatorem SHA1
@@ -16,7 +19,7 @@ Definicje:
 	- ruchomy wskaŸnik na commit (zmienia siê z ka¿dym kolejnym commitem)
 	- kopia "koncepcyjna", a nie fizyczna (Git nie duplikuje plików miêdzy ga³êziami)
 	- ga³¹Ÿ - to lista commitów. Z czego jeden jest szczególny to TIP.
-
+	- ga³¹¿ to nic innego jak lista commitów
 • tip	- tip - Ostatni (najnowszy) commit w ga³êzi.
 	Charakterystyki ga³êzi w Gicie
 		- w commicie nie ma zapisanej informacji na jakiej ga³êzi zosta³ utworzony
@@ -50,11 +53,12 @@ Definicje:
 	- jeœli linia z "base" jest zmieniona (lub usuniêta) w jednym z "source" albo "target" przenosimy zmiany
 	- jeœli linia z "base" jest zmieniona (lub usuniêta) w obu "source" i "target" KONFLKT!
   • Octopus merge - po³¹czenie wiêcej ni¿ 2 ga³êzi. Powinno siêich unikaæ.
+  • merge commit - merge commit ma wiêcej ni¿ 1 rodzica.
 • parent - poprzedni commit (rodzic)
 	- Commit mo¿e mieæ wielu rodziców, jeœli jest efektem operacji merge.
 	- root commit - pierwszy commit w historii (root commit) nie ma  
 • repozytorium - to katalog na dysku zawieraj¹cy wszystkie informacje o aktualnym stanie projektu i jego historii. Mo¿e zawieraæ odwo³ania do innych repo.
-• tag - nieruchomy wskaŸnik, referenja na konkretny commit. Jest to etykieta, nazwa, któr¹ mo¿emy nadaæ commitowi bez zmiany jego historii
+• tag - nieruchomy wskaŸnik na commit, referenja na konkretny commit. Jest to etykieta, nazwa, któr¹ mo¿emy nadaæ commitowi bez zmiany jego historii
 	- raz nadany zawsze wskazuje na to samo miejsce w historii, chyba ¿e zostanie skasowany i utworzony od nowa.
 	- podzia³ tagów:
 		- lightweight (lekkie) 
@@ -295,6 +299,7 @@ $ git log --oneline o^..h				-pokazanie logów od commita od taga o-1 poziom do g
 	549ba15 (tag: ll) Change Hello World welcome text
 	684cde9 (tag: o) Modified website title
 
+**Lekcja 4.08 Ga³êzie ***************************************************************************************************************************************************
 $ git branch my_new_branch				- utworzenie nowej ga³êzi o nazwie: my_new_branch
 $ git branch						- lista ga³êzi
 	* master					- * oznacza aktualna ga³¹Ÿ w Working Copy
@@ -341,7 +346,7 @@ $ git log --oneline					-- listing commitów
 
 $ git checkout o -- docs/examples/jumbotron/index.html	- za³adowanie pliku index.html z commita o tagu 'o' do WD
 
-$ git status						- sprawdzenie ED
+$ git status						- sprawdzenie WD
 On branch master
 Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
@@ -366,6 +371,11 @@ e53de1f (tag: h) delete year from copyright in footer
 b8e9dcb (tag: e) removed sign in box from my page
 549ba15 (tag: ll) Change Hello World welcome text
 684cde9 (tag: o) Modified website title
+
+							Detached HEAD - stan bez ga³êzi.
+
+
+
 
 **Lekcja 4.09 Merge ***************************************************************************************************************************************************
 $ git checkout -b login_colors				- nowa ga³êŸ + zmiany w indeksie (YELLOW)
@@ -420,8 +430,9 @@ $ git log -n4 --all --oneline				- ostatnie 4 commity. Widaæ, ¿e projekt wygl¹da
 	0a3c10a (master) Lekcja 4.08 Ga³êzie + dodanie pliku Git - kurs.txt
 	25f3e66 recover tag ll
 
+Pierwszy non-FF merge
 
-test
+
 
 
 DeepL:================================================================================================
